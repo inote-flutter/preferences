@@ -16,7 +16,11 @@ class SwitchPreference extends StatefulWidget {
 
   final bool disabled;
 
-  final Color? switchActiveColor;
+  final Color? activeColor;
+  final Color? inactiveThumbColor;
+  final Color? inactiveTrackColor;
+  final Color? trackOutlineColor;
+  final double? trackOutlineWidth;
 
   SwitchPreference(
     this.title,
@@ -29,7 +33,11 @@ class SwitchPreference extends StatefulWidget {
     this.onDisable,
     this.onChange,
     this.disabled = false,
-    this.switchActiveColor,
+    this.activeColor = Colors.blue,
+    this.inactiveThumbColor = Colors.blue,
+    this.inactiveTrackColor = Colors.transparent,
+    this.trackOutlineColor = Colors.grey,
+    this.trackOutlineWidth = 1,
   });
 
   @override
@@ -52,7 +60,17 @@ class _SwitchPreferenceState extends State<SwitchPreference> {
       subtitle: widget.desc == null ? null : Text(widget.desc!),
       trailing: Switch.adaptive(
         value: PrefService.getBool(widget.localKey) ?? widget.defaultVal,
-        activeColor: widget.switchActiveColor,
+        activeColor: widget.activeColor,
+        inactiveThumbColor: widget.inactiveThumbColor,
+        inactiveTrackColor: widget.inactiveTrackColor,
+        trackOutlineColor: widget.trackOutlineColor != null
+            ? WidgetStateProperty.resolveWith<Color>(
+                (Set<WidgetState> states) => widget.trackOutlineColor!)
+            : null,
+        trackOutlineWidth: widget.trackOutlineWidth != null
+            ? WidgetStateProperty.resolveWith<double>(
+                (Set<WidgetState> states) => widget.trackOutlineWidth!)
+            : null,
         onChanged:
             widget.disabled ? null : (val) => val ? onEnable() : onDisable(),
       ),
@@ -64,7 +82,7 @@ class _SwitchPreferenceState extends State<SwitchPreference> {
     );
   }
 
- void onEnable() async {
+  void onEnable() async {
     setState(() => PrefService.setBool(widget.localKey, true));
     if (widget.onChange != null) widget.onChange!();
     if (widget.onEnable != null) {
@@ -80,7 +98,7 @@ class _SwitchPreferenceState extends State<SwitchPreference> {
     }
   }
 
- void onDisable() async {
+  void onDisable() async {
     setState(() => PrefService.setBool(widget.localKey, false));
     if (widget.onChange != null) widget.onChange!();
     if (widget.onDisable != null) {

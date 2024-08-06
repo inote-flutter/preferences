@@ -14,7 +14,11 @@ class RadioPreference<T> extends StatefulWidget {
 
   final bool disabled;
 
-  final leading;
+  final Widget? leading;
+
+  final Color activeColor;
+
+  final Color inactiveColor;
 
   RadioPreference(
     this.title,
@@ -27,6 +31,8 @@ class RadioPreference<T> extends StatefulWidget {
     this.onSelect,
     this.disabled = false,
     this.leading,
+    this.activeColor = Colors.blue,
+    this.inactiveColor = Colors.blue,
   });
 
   @override
@@ -34,11 +40,11 @@ class RadioPreference<T> extends StatefulWidget {
 }
 
 class _RadioPreferenceState<T> extends State<RadioPreference<T>> {
- @override
+  @override
   late BuildContext context;
 
   @override
- void initState() {
+  void initState() {
     super.initState();
     PrefService.onNotify(widget.localGroupKey, () {
       try {
@@ -50,7 +56,7 @@ class _RadioPreferenceState<T> extends State<RadioPreference<T>> {
   }
 
   @override
- void dispose() {
+  void dispose() {
     super.dispose();
     PrefService.onNotifyRemove(widget.localGroupKey);
   }
@@ -69,6 +75,14 @@ class _RadioPreferenceState<T> extends State<RadioPreference<T>> {
       trailing: Radio<T>(
         value: widget.val,
         groupValue: PrefService.get(widget.localGroupKey),
+        // activeColor: widget.activeColor,
+        fillColor:
+            WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
+            return widget.activeColor;
+          }
+          return widget.inactiveColor;
+        }),
         onChanged: widget.disabled ? null : (var val) => onChange(widget.val),
       ),
       onTap: (widget.ignoreTileTap || widget.disabled)
@@ -77,7 +91,7 @@ class _RadioPreferenceState<T> extends State<RadioPreference<T>> {
     );
   }
 
- void onChange(T val) {
+  void onChange(T val) {
     if (val is String) {
       setState(() => PrefService.setString(widget.localGroupKey, val));
     } else if (val is int) {
