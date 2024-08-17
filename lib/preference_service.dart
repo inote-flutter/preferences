@@ -4,16 +4,24 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+///
 class PrefService {
+  ///
   static late SharedPreferences sharedPreferences;
+
+  ///
   static String prefix = '';
 
+  ///
   static bool _justCache = false;
 
+  ///
   static late Map<String, dynamic> cache;
 
+  ///
   static bool _hasInit = false;
 
+  ///
   static Future<bool> init({String prefix = ''}) async {
     if (_hasInit) return false;
     PrefService.prefix = prefix;
@@ -23,6 +31,7 @@ class PrefService {
     return true;
   }
 
+  ///
   static void setDefaultValues(Map<String, dynamic> values) {
     for (var key in values.keys) {
       if (sharedPreferences.containsKey(prefix + key)) continue;
@@ -36,11 +45,12 @@ class PrefService {
       } else if (val is String) {
         sharedPreferences.setString(prefix + key, val);
       } else if (val is List<String>) {
-      sharedPreferences.setStringList(key, val);
+        sharedPreferences.setStringList(key, val);
       }
     }
   }
 
+  ///
   static bool? getBool(String key, {bool ignoreCache = false}) {
     checkInit();
     if (key.startsWith('!')) {
@@ -60,6 +70,13 @@ class PrefService {
     }
   }
 
+  /// get bool with default value
+  static bool boolDefault(String key,
+      {bool ignoreCache = false, bool def = false}) {
+    return getBool(key, ignoreCache: ignoreCache) ?? def;
+  }
+
+  ///
   static void setBool(String key, bool val) {
     checkInit();
     if (_justCache) {
@@ -69,6 +86,7 @@ class PrefService {
     }
   }
 
+  ///
   static String? getString(String key, {bool ignoreCache = false}) {
     checkInit();
     if (_justCache && !ignoreCache) {
@@ -78,6 +96,13 @@ class PrefService {
     }
   }
 
+  /// get string with default value
+  static String stringDefault(String key,
+      {bool ignoreCache = false, String def = ''}) {
+    return getString(key, ignoreCache: ignoreCache) ?? def;
+  }
+
+  ///
   static void setString(String key, String val) {
     checkInit();
     if (_justCache) {
@@ -87,6 +112,7 @@ class PrefService {
     }
   }
 
+  ///
   static int? getInt(String key, {bool ignoreCache = false}) {
     checkInit();
     if (_justCache && !ignoreCache) {
@@ -96,6 +122,12 @@ class PrefService {
     }
   }
 
+  /// get int with default value
+  static int intDefault(String key, {bool ignoreCache = false, int def = 0}) {
+    return getInt(key, ignoreCache: ignoreCache) ?? def;
+  }
+
+  ///
   static void setInt(String key, int val) {
     checkInit();
     if (_justCache) {
@@ -105,6 +137,7 @@ class PrefService {
     }
   }
 
+  ///
   static double? getDouble(String key, {bool ignoreCache = false}) {
     checkInit();
     if (_justCache && !ignoreCache) {
@@ -114,6 +147,13 @@ class PrefService {
     }
   }
 
+  /// get double with default value
+  static double doubleDefault(String key,
+      {bool ignoreCache = false, double def = 0}) {
+    return getDouble(key, ignoreCache: ignoreCache) ?? def;
+  }
+
+  ///
   static void setDouble(String key, double val) {
     checkInit();
     if (_justCache) {
@@ -123,6 +163,7 @@ class PrefService {
     }
   }
 
+  ///
   static List<String>? getStringList(String key, {bool ignoreCache = false}) {
     checkInit();
     if (_justCache && !ignoreCache) {
@@ -132,6 +173,13 @@ class PrefService {
     }
   }
 
+  /// get List<String> with default value
+  static List<String> stringListDefault(String key,
+      {bool ignoreCache = false, List<String>? def}) {
+    return getStringList(key, ignoreCache: ignoreCache) ?? def ?? [];
+  }
+
+  ///
   static void setStringList(String key, List<String> val) {
     checkInit();
     if (_justCache) {
@@ -141,6 +189,7 @@ class PrefService {
     }
   }
 
+  ///
   static dynamic get(String key, {bool ignoreCache = false}) {
     checkInit();
     if (_justCache && !ignoreCache) {
@@ -150,11 +199,13 @@ class PrefService {
     }
   }
 
+  ///
   static Set<String> getKeys() {
     checkInit();
     return sharedPreferences.getKeys();
   }
 
+  ///
   static Map subs = {};
   static void notify(String key) {
     if (subs[key] == null) return;
@@ -164,21 +215,25 @@ class PrefService {
     }
   }
 
+  ///
   static void onNotify(String key, Function f) {
     if (subs[key] == null) subs[key] = [];
     subs[key].add(f);
   }
 
+  ///
   static void onNotifyRemove(String key) {
     subs[key] = null;
   }
 
+  ///
   static void showError(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),
     ));
   }
 
+  ///
   static void checkInit() {
     if (!_hasInit && !_justCache) {
       throw Exception('''\n
@@ -193,6 +248,7 @@ class PrefService {
     }
   }
 
+  ///
   static void rebuildCache() {
     cache = {};
 
@@ -201,14 +257,17 @@ class PrefService {
     }
   }
 
+  ///
   static void enableCaching() {
     _justCache = true;
   }
 
+  ///
   static void disableCaching() {
     _justCache = false;
   }
 
+  ///
   static void applyCache() {
     disableCaching();
     for (var key in cache.keys) {
@@ -228,6 +287,7 @@ class PrefService {
     rebuildCache();
   }
 
+  ///
   static void clear() {
     sharedPreferences.clear();
   }
