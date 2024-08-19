@@ -206,6 +206,16 @@ class PrefService {
   }
 
   ///
+  static void remove(String key) {
+    checkInit();
+    if (_justCache) {
+      cache.remove('$prefix$key');
+    } else {
+      sharedPreferences.remove('$prefix$key');
+    }
+  }
+
+  ///
   static Map subs = {};
   static void notify(String key) {
     if (subs[key] == null) return;
