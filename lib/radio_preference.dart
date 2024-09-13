@@ -46,13 +46,13 @@ class _RadioPreferenceState<T> extends State<RadioPreference<T>> {
   @override
   void initState() {
     super.initState();
-    PrefService.onNotify(widget.localGroupKey, () {
-      try {
-        setState(() {});
-      } catch (e) {
-        print(e);
-      }
-    });
+    // PrefService.onNotify(widget.localGroupKey, () {
+    //   try {
+    //     setState(() {});
+    //   } catch (e) {
+    //     print(e);
+    //   }
+    // });
   }
 
   @override
@@ -93,16 +93,18 @@ class _RadioPreferenceState<T> extends State<RadioPreference<T>> {
 
   void onChange(T val) {
     if (val is String) {
-      setState(() => PrefService.setString(widget.localGroupKey, val));
+      PrefService.setString(widget.localGroupKey, val);
     } else if (val is int) {
-      setState(() => PrefService.setInt(widget.localGroupKey, val));
+      PrefService.setInt(widget.localGroupKey, val);
     } else if (val is double) {
-      setState(() => PrefService.setDouble(widget.localGroupKey, val));
+      PrefService.setDouble(widget.localGroupKey, val);
     } else if (val is bool) {
-      setState(() => PrefService.setBool(widget.localGroupKey, val));
+      PrefService.setBool(widget.localGroupKey, val);
     }
-    PrefService.notify(widget.localGroupKey);
 
     if (widget.onSelect != null) widget.onSelect!();
+
+    // PrefService.notify(widget.localGroupKey);
+    if (mounted) setState(() {});
   }
 }

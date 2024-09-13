@@ -83,7 +83,7 @@ class _SwitchPreferenceState extends State<SwitchPreference> {
   }
 
   void onEnable() async {
-    setState(() => PrefService.setBool(widget.localKey, true));
+    PrefService.setBool(widget.localKey, true);
     if (widget.onChange != null) widget.onChange!();
     if (widget.onEnable != null) {
       try {
@@ -91,15 +91,15 @@ class _SwitchPreferenceState extends State<SwitchPreference> {
       } catch (e) {
         if (widget.resetOnException) {
           PrefService.setBool(widget.localKey, false);
-          if (mounted) setState(() {});
         }
         if (mounted) PrefService.showError(context, e.toString());
       }
     }
+    if (mounted) setState(() {});
   }
 
   void onDisable() async {
-    setState(() => PrefService.setBool(widget.localKey, false));
+    PrefService.setBool(widget.localKey, false);
     if (widget.onChange != null) widget.onChange!();
     if (widget.onDisable != null) {
       try {
@@ -107,10 +107,10 @@ class _SwitchPreferenceState extends State<SwitchPreference> {
       } catch (e) {
         if (widget.resetOnException) {
           PrefService.setBool(widget.localKey, true);
-          if (mounted) setState(() {});
         }
         if (mounted) PrefService.showError(context, e.toString());
       }
     }
+    if (mounted) setState(() {});
   }
 }
