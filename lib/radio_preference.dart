@@ -63,11 +63,12 @@ class _RadioPreferenceState<T> extends State<RadioPreference<T>> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isDefault && PrefService.get(widget.localGroupKey) == null) {
-      onChange(widget.val);
-    }
+    // if (widget.isDefault && PrefService.get(widget.localGroupKey) == null) {
+    //   onChange(widget.val);
+    // }
 
     this.context = context;
+
     return ListTile(
       title: Text(widget.title),
       leading: widget.leading,
